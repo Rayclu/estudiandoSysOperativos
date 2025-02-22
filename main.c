@@ -78,11 +78,11 @@ int GetProcess(SystemQueue *Queue) {
             return -1;
         }
         printf("Process added to queue.\n");
-        return 0;
+        return 0; // Proceso agregado exitosamente
     } else {
         printf("Application not found.\n");
-        free(process);
-        return GetProcess(Queue);
+        free_process(process);
+        return GetProcess(Queue); // Intentar nuevamente si no se encuentra la aplicación
     }
 }
 
@@ -225,26 +225,32 @@ void showMenu() {
 }
 
 int main() {
-    SystemQueue Sq;
-    Averages averages = {0};
-    SystemStats stats = {0};
-    int option;
+    SystemQueue Sq; // Cola de procesos
+    SystemQueue AdminQueue; // Cola de procesos con prioridad 1
+    Averages averages = {0}; // Estructura para promedios
+    SystemStats stats = {0}; // Estructura para estadísticas del sistema
+    int option; // Opción del menú
     
-    initialize(&Sq);
-    stats.start_time = time(NULL);
+    initialize(&Sq); // Inicializar la cola
+    initialize(&AdminQueue); // Inicializar la cola de administración
+    stats.start_time = time(NULL); // Registrar el tiempo de inicio
     
     do {
-        showMenu();
-        scanf("%d", &option);
-        
+        showMenu(); // Mostrar menú
+        scanf("%d", &option); // Leer opción del usuario
+        int admin_execution;
+
         switch(option) {
             case 1:
-                int add_process = GetProcess(&Sq);
-                printf("add_process: %d\n", add_process);
-                if (add_process == 0) {
-                    stats.total_processes++;
+                // Agregar un nuevo proceso
+
+                if (GetProcess(&Sq) == 0) {
+                //int add_process = GetProcess(&Sq);
+                //printf("add_process: %d\n", add_process);
+                //if (add_process == 0) {
+                    stats.total_processes++; // Incrementar total de procesos
                     printf("Process added successfully.\n");
-                }else{
+                } else {
                     printf("Error adding process to queue.\n");
                 }
                 break;
@@ -294,10 +300,10 @@ int main() {
                 
                 break;
             case 5:
-                printf("Exiting...\n");
+                printf("Exiting...\n"); // Salir del programa
                 break;
-            default:
-                printf("Invalid option\n");
+            default: 
+                printf("Invalid option\n"); // Opción inválida
                 return -1;
         }
     } while(option != 5);

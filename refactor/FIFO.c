@@ -1,4 +1,11 @@
-#include "FIFO.h"
+// Ejemplo de conflicto en main.c
+<<<<<<< HEAD
+// Código de la rama local
+printf("Hola desde la rama local\n");
+=======
+// Código de la rama remota
+printf("Hola desde la rama remota\n");
+>>>>>>> 6f30164... vX#include "FIFO.h"
 #include <dirent.h>
 #include <string.h>
 #include <stdio.h>
