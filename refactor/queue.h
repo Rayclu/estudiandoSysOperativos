@@ -13,7 +13,7 @@ typedef struct {
 
 void initialize(SystemQueue *q);
 int push(SystmProcess *proc, SystemQueue *Queue);
-SystmProcess* pop(SystemQueue *Queue);
+SystmProcess* poppet(SystemQueue *Queue, int *index);
 void displayQueue(SystemQueue *q);
 SystemQueue* HaveThereAdminProcess(SystemQueue *q);
 

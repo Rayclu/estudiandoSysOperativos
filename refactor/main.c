@@ -116,7 +116,7 @@ int main() {
                     printf("|______________________________________\n");
                 }
                 
-                SystmProcess *proc = pop(&Sq);
+                SystmProcess *proc = poppet(&Sq, &Sq.front);
                 if (proc != NULL) {
                     Simulate_execution(proc, &averages); // Simular ejecución
                     stats.completed_processes++; // Incrementar procesos completados
@@ -153,7 +153,7 @@ int main() {
 
     // Liberar memoria de procesos restantes en la cola
     while (Sq.front != -1 && Sq.front <= Sq.rear) {
-        SystmProcess *proc = pop(&Sq);
+        SystmProcess *proc = poppet(&Sq, &Sq.front);
         free_process(proc);
     }
     

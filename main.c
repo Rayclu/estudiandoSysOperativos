@@ -26,6 +26,20 @@ int GetDir(const char *app_name, char *path, size_t size) {
                     closedir(dir);
                     return 0; // Directorio encontrado
                 }
+                
+            }    
+        }
+        closedir(dir);
+    }
+    for (int i = 0; paths[i] != NULL; i++) {
+        dir = opendir(paths[i]);
+        if (dir != NULL) {
+            while ((entry = readdir(dir)) != NULL) {
+                if (strcmp(entry->d_name, app_name) == 0) {
+                    snprintf(path, size, "%s/%s", paths[i], entry->d_name);
+                    closedir(dir);
+                    return 0;
+                }
             }
             closedir(dir);
         }
@@ -64,43 +78,180 @@ int GetProcess(SystemQueue *Queue) {
             return -1;
         }
         printf("Process added to queue.\n");
-        return 0; // Proceso agregado exitosamente
+        return 0;
     } else {
         printf("Application not found.\n");
-        free_process(process);
-        return GetProcess(Queue); // Intentar nuevamente si no se encuentra la aplicación
+        free(process);
+        return GetProcess(Queue);
     }
 }
 
-int main() {
-    SystemQueue Sq; // Cola de procesos
-    SystemQueue AdminQueue; // Cola de procesos con prioridad 1
-    Averages averages = {0}; // Estructura para promedios
-    SystemStats stats = {0}; // Estructura para estadísticas del sistema
-    int option; // Opción del menú
+// Nueva función auxiliar para convertir segundos a formato HH:MM:SS
+void formatTime(int seconds, char *buffer) {
+    int hours = seconds / 3600;
+    int minutes = (seconds % 3600) / 60;
+    int secs = seconds % 60;
+    sprintf(buffer, "%02d:%02d:%02d", hours, minutes, secs);
+}
+void PrintUsage(SystmProcess *process){
+    //struct rusage usage;
+    //getrusage(RUSAGE_SELF, &usage);
+    //printf("Memory Usage: %ld bytes\n", usage.ru_maxrss);
+
+}
+
+SystemQueue* AdminExecution(SystemQueue *Queue){
+    SystemQueue *AdminQueue = malloc(sizeof(SystemQueue));
+    if (!AdminQueue) return NULL;
+    initialize(&AdminQueue); 
+
+    if (Queue->front == -1 || Queue->front > Queue->rear) return NULL;
+        
+    if (Queue->data[Queue->front]->priority == 0 ){
+        
+        Queue->front++;
+        return AdminExecution(Queue);
+
+    } else if (Queue->data[Queue->front]->priority == 1){
     
-    initialize(&Sq); // Inicializar la cola
-    initialize(&AdminQueue); // Inicializar la cola de administración
-    stats.start_time = time(NULL); // Registrar el tiempo de inicio
+        push(Queue->data[Queue->front], AdminQueue);
+        Queue->front++;
+        return AdminExecution(Queue);
+    
+    }else{
+
+        printf("Error: Invalid process priority.\n");
+        return NULL;
+
+    }
+    return AdminQueue;
+   /*
+    if (AdminQueue->front == -1 || AdminQueue->front > AdminQueue->rear){
+        printf("Error: AdminQueue is empty.\n");
+        return NULL;
+    }else if (AdminQueue->front != -1 && AdminQueue->front <= AdminQueue->rear){
+        
+        Simulate_execution(AdminQueue->data[AdminQueue->front], AdminQueue);
+    }
+    */   
+}
+
+
+// Simula la ejecución de un proceso
+void Simulate_execution(SystmProcess *process, Averages *averages) {
+    if (!process) {
+        printf("Invalid process.\n");
+        return;
+    }
+    
+    char timeBuffer[9];
+    printf("\nExecuting Process:\n");
+    printf("-> Name: %s\n", process->name);
+    
+    process->start_time = time(NULL);
+    system(process->pointer);
+    process->end_time = time(NULL);
+    
+    // Corregir cálculos de tiempos
+    process->execution_time = process->end_time - process->start_time;
+    process->waiting_t = process->start_time - process->arrival_t;
+    process->answer_t = process->end_time - process->arrival_t;
+
+    //Calculate averages
+    if (averages->numb_of_processes != 0){    averages->waiting_t += process->waiting_t;
+        averages->turnaround_t += process->answer_t;
+        averages->response_t += process->execution_time;
+        
+        formatTime(averages->waiting_t=averages->waiting_t/averages->numb_of_processes, timeBuffer);
+        formatTime(averages->turnaround_t=averages->turnaround_t/averages->numb_of_processes, timeBuffer);
+        formatTime(averages->response_t=averages->response_t/averages->numb_of_processes, timeBuffer);
+        printf("Averages:\n");
+        printf("Waiting Time: %f\n", averages->waiting_t);
+        printf("Turnaround Time: %f\n", averages->turnaround_t);
+        printf("Response Time: %f\n", averages->response_t);
+        }
+
+    //Format timers
+    formatTime(process->answer_t, timeBuffer);
+    printf("-> Answer Time: %s (%d seconds)\n", timeBuffer, process->answer_t);
+
+    
+    formatTime(process->waiting_t, timeBuffer);
+    printf("-> Waiting Time: %s (%d seconds)\n", timeBuffer, process->waiting_t);
+    
+    formatTime(process->execution_time, timeBuffer);
+    printf("-> Execution Time: %s (%d seconds)\n", timeBuffer, process->execution_time);
+    
+    printf("-> Path: %s\n", process->pointer);
+    printf("\n___________________________________________________________");
+
+   
+}
+
+// Muestra los procesos en la cola
+void displayQueue(SystemQueue *q) {
+    if (q->front == -1 || q->front > q->rear) {
+        printf("Queue is empty.\n");
+    } else {
+        printf("Processes in queue:\n");
+        for (int i = q->front; i <= q->rear; i++) {
+            SystmProcess *proc = q->data[i];
+            printf("-> %s (Path: %s)\n", proc->name, proc->pointer);
+        }
+    }
+}
+SystmProcess* pop(SystemQueue*Queue){
+    if (Queue->front == -1 || Queue->front > Queue->rear) return NULL;
+    SystmProcess *proc = Queue->data[Queue->front];
+    Queue->front++;
+
+    if (Queue->front>Queue->rear)
+    {
+        Queue->front = Queue->rear = -1;
+    }
+    return proc;         
+}
+
+// Mejorar el menú principal
+void showMenu() {
+    printf("\n=== System Process Simulator ===\n");
+    printf("|  1. Add new process           |\n");
+    printf("|  2. Show current queue        |\n");
+    printf("|  3. Execute simulation        |\n");
+    printf("|  4. Show statistics           |\n");
+    printf("|  5. Exit                      |\n");
+    printf("+-------------------------------+\n");
+    printf("\nSelect an option: ");
+}
+
+int main() {
+    SystemQueue Sq;
+    Averages averages = {0};
+    SystemStats stats = {0};
+    int option;
+    
+    initialize(&Sq);
+    stats.start_time = time(NULL);
     
     do {
-        showMenu(); // Mostrar menú
-        scanf("%d", &option); // Leer opción del usuario
-        int admin_execution;
+        showMenu();
+        scanf("%d", &option);
+        
         switch(option) {
             case 1:
-                // Agregar un nuevo proceso
-                
-                if (GetProcess(&Sq) == 0) {
-                    stats.total_processes++; // Incrementar total de procesos
+                int add_process = GetProcess(&Sq);
+                printf("add_process: %d\n", add_process);
+                if (add_process == 0) {
+                    stats.total_processes++;
                     printf("Process added successfully.\n");
-                } else {
+                }else{
                     printf("Error adding process to queue.\n");
                 }
                 break;
             case 2:
                 displayQueue(&Sq); // Mostrar cola de procesos
                 break;
+           
             case 3:
                 // Ejecutar un proceso
                 SystemQueue* AdminQueueResult = HaveThereAdminProcess(&Sq);
@@ -143,10 +294,10 @@ int main() {
                 
                 break;
             case 5:
-                printf("Exiting...\n"); // Salir del programa
+                printf("Exiting...\n");
                 break;
             default:
-                printf("Invalid option\n"); // Opción inválida
+                printf("Invalid option\n");
                 return -1;
         }
     } while(option != 5);
@@ -158,4 +309,11 @@ int main() {
     }
     
     return 0; // Fin del programa
+    while (Sq.front != -1 && Sq.front <= Sq.rear){
+        SystmProcess *proc = pop(&Sq);
+        free(proc->pointer);
+        free(proc);
+    }
+    
+    return 0;
 }
