@@ -1,19 +1,11 @@
-// Ejemplo de conflicto en main.c
-<<<<<<< HEAD
-// Código de la rama local
-printf("Hola desde la rama local\n");
-=======
-// Código de la rama remota
-printf("Hola desde la rama remota\n");
->>>>>>> 6f30164... vX#include "FIFO.h"
 #include <dirent.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "process.h"
-#include "queue.h"
-#include "simulator.h"
+#include "FIFO/process.h"
+#include "FIFO/queue.h"
+#include "FIFO/simulator.h"
 
 // Función para obtener el directorio de una aplicación
 int GetDir(const char *app_name, char *path, size_t size) {
