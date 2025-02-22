@@ -1,3 +1,4 @@
+#include "FIFO.h"
 #include <dirent.h>
 #include <string.h>
 #include <stdio.h>
@@ -72,7 +73,7 @@ int GetProcess(SystemQueue *Queue) {
     }
 }
 
-int main() {
+int mainFIFO() {
     SystemQueue Sq; // Cola de procesos
     SystemQueue AdminQueue; // Cola de procesos con prioridad 1
     Averages averages = {0}; // Estructura para promedios
@@ -103,6 +104,7 @@ int main() {
                 break;
             case 3:
                 // Ejecutar un proceso
+                
                 SystemQueue* AdminQueueResult = HaveThereAdminProcess(&Sq);
                 if(AdminQueueResult) {
                     printf("|______________________________________\n");
