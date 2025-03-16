@@ -3,8 +3,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "FIFO/process.h"
-#include "FIFO/queue.h"
+#include "process.h"
+#include "queue.h"
 
 int GetDir(const char *app_name, char *path, size_t size);
 int GetProcess(SystemQueue *queue);

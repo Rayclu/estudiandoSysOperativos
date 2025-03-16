@@ -3,14 +3,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "FIFO/process.h"
-#include "FIFO/queue.h"
-#include "FIFO/simulator.h"
+#include "process.h"
+#include "queue.h"
+#include "simulator.h"
 
 // Función para obtener el directorio de una aplicación
 int GetDir(const char *app_name, char *path, size_t size) {
     // Lista de posibles directorios donde buscar la aplicación
-    const char *paths[] = {"~/","~/Downloads", "~/Desktop", "~/Documents", "~/", "/snap/bin", "/usr/local/bin", "/usr/bin", "/bin", "/opt", NULL};
+    const char *paths[] = {"~/","~/Downloads", "~/Desktop", "~/Documents", "/snap/bin", "/usr/local/bin", "/usr/bin", "/bin", "/opt", NULL};
     struct dirent *entry;
     DIR *dir;
 
@@ -33,7 +33,7 @@ int GetDir(const char *app_name, char *path, size_t size) {
     return -1; // Directorio no encontrado
 }
 
-// Función para obtener un proceso del usuario
+// Función para obtener un proceso
 int GetProcess(SystemQueue *Queue) {
     char name[128]; // Nombre de la aplicación
     int priority; // Prioridad del proceso

@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "fifo.h": "c",
+        "process.h": "c"
+    }
+}

@@ -32,4 +32,5 @@ void Create(){
     char *name_entered_for_user;
     scanf("Please select an algorithm to continue with the simulation of the process managment:\n\t%s",
     name_entered_for_user);
+    
 }
