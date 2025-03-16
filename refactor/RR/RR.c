@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "process.h"
 #include "queue.h"
+#include "simulator.h"
 
 //#define LimitOfProcessIntoTheArray = 5
 /*
@@ -26,19 +27,20 @@ int LimitProc(SystemQueue*Array){
     return 0;
 }
 
-int AddProcToCIcle(SystemQueue*Array , SystmProcess*Process){
+int AddProcToCicle(SystemQueue*Array , SystmProcess*Process){
     /*
     *Add new process to th Array
     */
     int error = 0;//Boolean value, verify if the Array are initialized
     int index = Array->rear;
-    index == -1 ? initialize(Array) : 0 ; 
+    index == -1 ? initialize(Array) : NULL ; 
     
-    if(LimitProc(Array) == 0){
+    if(LimitProc(&Array) == 0){
         Array->rear+=1;
         Array->data[Array->front] = Process;
         return 0;//Success
     }
+
 
     return -1; //Error Adding the process
 
@@ -50,5 +52,30 @@ int main(){
     SystmProcess *Process;
 
     initialize(&CircularArray);
+    showMenu();
+    int option;
+    do{
+
+        switch (option){
+            case 1:
+        /* code */
+                break;
+        
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            default:
+                printf("Error: Invalid option, select an option again: \n\t");
+                scanf("%127s", &option);
+                break;
+       }
+    } while (option != 5);
+    
+    
 
 }
