@@ -108,11 +108,11 @@ int mainFIFO() {
                 if(AdminQueueResult) {
                     printf("|______________________________________\n");
                     printf("|->Processes with Admin priority in queue:\n");
-                        for (int i = AdminQueueResult->front; i <= AdminQueueResult->rear; i++) {
-                            Simulate_execution(AdminQueueResult->data[i], &averages);
-                            stats.completed_processes++;
-                            free_process(AdminQueueResult->data[i]);
-                        }                    
+                    for (int i = AdminQueueResult->front; i <= AdminQueueResult->rear; i++) {
+                        Simulate_execution(AdminQueueResult->data[i], &averages);
+                        stats.completed_processes++;
+                        free_process(AdminQueueResult->data[i]);
+                    }                    
                     free(AdminQueueResult);
                     printf("|______________________________________\n");
                 }

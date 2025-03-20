@@ -20,6 +20,7 @@ typedef struct {
     int  completed;
 } SystmProcess;
 
+//void GetStats(SystmProcess*SProcess);
 SystmProcess* create_process(const char *name, int priority);
 void free_process(SystmProcess *process);
 

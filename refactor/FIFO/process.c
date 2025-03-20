@@ -38,3 +38,11 @@ void free_process(SystmProcess *process) {
         free(process); // Liberar memoria del proceso
     }
 }
+
+//void GetStats(SystmProcess*SProcess){
+    /*
+    **Function for measuring the stats of the process,
+    */
+
+
+//}

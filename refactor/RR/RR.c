@@ -55,19 +55,24 @@ int main(){
     showMenu();
     int option;
     do{
-
         switch (option){
             case 1:
-        /* code */
+                // Add new process
                 break;
-        
             case 2:
+                // Show list
+                
                 break;
             case 3:
+                // Execute simulation
                 break;
             case 4:
+                // Show statistics
+                
                 break;
             case 5:
+                // exit.
+                printf("Exiting...");
                 break;
             default:
                 printf("Error: Invalid option, select an option again: \n\t");
